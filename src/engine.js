@@ -174,7 +174,7 @@ export class GameEngine {
     switch(actionType) {
       case 'SET_TIME':
         this.timeRemaining = payload;
-        this.maxTime = Math.max(this.maxTime, this.timeRemaining);
+        this.maxTime = payload; // Reset max time so the visual timer bar starts at 100%
         break;
       case 'ADD_TIME':
         this.timeRemaining += payload;
