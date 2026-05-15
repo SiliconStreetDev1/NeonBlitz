@@ -145,7 +145,8 @@ export class LevelController {
     this.engine.grid.setupGridDimensions(this.engine.config.level.GRID_COLS, this.engine.config.level.GRID_ROWS);
 
     const runSeed = this.engine.checkpointManager.getRunSeed();
-    this.engine.audio?.startLevelMusic?.(this.engine.level, runSeed, this.engine.progression.milestones.bossLevel);
+    const audioProgressionLevel = this.engine.isRandomMode ? (this.engine.randomStagesCleared + 1) : this.engine.level;
+    this.engine.audio?.startLevelMusic?.(audioProgressionLevel, runSeed, this.engine.progression.milestones.bossLevel);
 
     const rng = seededRandom(this.engine.level);
     this.engine.targetQueue = generateLevelData(this.engine.level, rng, this.engine.config);
@@ -255,11 +256,10 @@ export class LevelController {
 
     if (this.engine.isRandomMode) {
       this.engine.randomStagesCleared++;
-      // Reroll the level and audio seed for the next stage of the random run
+      // Reroll the board mechanics for the next stage (music stays on its sequential shuffled track)
       const MIN_RANDOM_LEVEL = 10;
       const MAX_RANDOM_LEVEL = 55;
       this.engine.level = Math.floor(Math.random() * (MAX_RANDOM_LEVEL - MIN_RANDOM_LEVEL + 1)) + MIN_RANDOM_LEVEL;
-      this.engine.checkpointManager.saveRunSeed(Math.floor(Math.random() * 1000000));
     } else {
       this.engine.level++;
     }

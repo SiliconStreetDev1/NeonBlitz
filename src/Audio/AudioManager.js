@@ -175,7 +175,12 @@ export class AudioManager {
         /** @type {string[]} */
         const tracks = [...this.audioConfig.tracks];
         const rng = seededRandom(runSeed);
-        tracks.sort(() => rng() - 0.5); // Deterministic shuffle!
+        
+        // Enterprise-grade Fisher-Yates Shuffle for a mathematically fair playlist
+        for (let j = tracks.length - 1; j > 0; j--) {
+          const k = Math.floor(rng() * (j + 1));
+          [tracks[j], tracks[k]] = [tracks[k], tracks[j]];
+        }
         
         const mappedIndex = (level - 1) % tracks.length;
         trackId = tracks[mappedIndex].replace('.json', '');
