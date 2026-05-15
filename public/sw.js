@@ -1,6 +1,6 @@
 // @ts-check
 
-const CACHE_NAME = 'neon-blitz-v23';
+const CACHE_NAME = 'neon-blitz-v25';
 // The core assets required to boot the engine offline
 const PRECACHE_ASSETS = [
   './',

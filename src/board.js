@@ -13,7 +13,7 @@
  * @param {any} config - Master config JSON.
  * @returns {TargetQueue} The generated queue of color targets.
  */
-export function generateLevelData(level = 1, rng = Math.random, config) {
+export function generateLevelData(level, rng, config) {
   const GRID_ROWS = config.level.GRID_ROWS;
   const GRID_COLS = config.level.GRID_COLS;
   const ALL_COLORS = config.level.ALL_COLORS;

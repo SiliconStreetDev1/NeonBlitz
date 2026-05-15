@@ -148,7 +148,9 @@ export class LevelController {
     const audioProgressionLevel = this.engine.isRandomMode ? (this.engine.randomStagesCleared + 1) : this.engine.level;
     this.engine.audio?.startLevelMusic?.(audioProgressionLevel, runSeed, this.engine.progression.milestones.bossLevel);
 
-    const rng = seededRandom(this.engine.level);
+    // Campaign uses deterministic level seeds. Random mode uses the randomized run seed + stage counter for infinite unique boards!
+    const boardSeed = this.engine.isRandomMode ? (runSeed + this.engine.randomStagesCleared) : this.engine.level;
+    const rng = seededRandom(boardSeed);
     this.engine.targetQueue = generateLevelData(this.engine.level, rng, this.engine.config);
     this.engine.currentTargetIndex = 0;
     this.engine.targetDifficulty = this.engine.targetQueue.length > 0 ? this.engine.targetQueue[0].difficulty : 0;
