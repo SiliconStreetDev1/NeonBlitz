@@ -90,6 +90,7 @@ export class LevelController {
 
     let timeReward = 0;
     let carriedTime = 0;
+    let wasResuming = this.engine.isResumingFromCheckpoint;
     
     const gs = this.engine.config.tuning.GAME_SETTINGS;
     if (this.engine.level === gs.STARTING_LEVEL) {
@@ -134,7 +135,7 @@ export class LevelController {
     
     this.engine.gameLoopController.start();
     
-    if (this.engine.level > this.engine.config.tuning.GAME_SETTINGS.STARTING_LEVEL) {
+    if (this.engine.level > this.engine.config.tuning.GAME_SETTINGS.STARTING_LEVEL && !wasResuming) {
       // Chain the animations cleanly using Promises instead of hacky setTimeouts
       this.engine.popups.showLevelBonus(timeReward, carriedTime).then(() => {
         // Only show "Checkpoint Saved" popup AFTER the Level Bonus finishes

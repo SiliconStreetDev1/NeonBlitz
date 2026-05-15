@@ -93,6 +93,25 @@ export class MenuController {
   }
 
   /**
+   * Restores settings to their default values and applies them immediately.
+   */
+  restoreDefaults() {
+    this.engine.settings.restoreDefaults();
+    this.updateSettingsUI();
+    
+    // Instantly apply the restored music state and volume
+    if (this.engine.settings.musicEnabled) {
+      if (!this.engine.audio?.getCurrentMusicTrack()) {
+        this.engine.audio?.startMenuMusic?.();
+      }
+      this.engine.audio?.setMusicVolume?.(this.engine.settings.musicVolume);
+    } else {
+      this.engine.audio?.stopMusic?.();
+    }
+    if (this.engine.settings.sfxEnabled) this.engine.audio?.playSelect?.();
+  }
+
+  /**
    * Sets the master music volume.
    * @param {number} vol - Value between 0.0 and 1.0.
    */

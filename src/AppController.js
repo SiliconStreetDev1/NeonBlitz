@@ -49,8 +49,11 @@ export class OrientationOverlay {
     this._resizeTimer = window.setTimeout(() => {
       const isLandscape = window.innerWidth > window.innerHeight;
       const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+      // Only block landscape if the vertical space is actually too cramped (e.g., phones).
+      // This allows touch-screen laptops, dual monitors, and tablets to play perfectly!
+      const isCramped = window.innerHeight < 600;
       
-      this.overlay.style.display = (isMobile && isLandscape) ? 'flex' : 'none';
+      this.overlay.style.display = (isMobile && isLandscape && isCramped) ? 'flex' : 'none';
       
       // Wait for DOM reflow before resizing canvas
       this.game.resizeCanvas();
@@ -300,6 +303,7 @@ export class AppController {
     
     this.ui.toggleMusicBtn.addEventListener('click', () => this.game.menuController.toggleMusic());
     this.ui.toggleSfxBtn.addEventListener('click', () => this.game.menuController.toggleSfx());
+    this.ui.resetSettingsBtn.addEventListener('click', () => this.game.menuController.restoreDefaults());
 
     this.ui.musicVolumeSlider.addEventListener('input', /** @param {Event} e */ (e) => {
       this.game.menuController.setMusicVolume(parseFloat(/** @type {HTMLInputElement} */ (e.target).value));

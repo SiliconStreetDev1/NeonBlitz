@@ -50,6 +50,7 @@ const ui = {
   toggleSfxBtn: /** @type {HTMLElement} */ (document.getElementById('toggleSfxBtn')),
   musicVolumeSlider: /** @type {HTMLInputElement} */ (document.getElementById('musicVolumeSlider')),
   sfxVolumeSlider: /** @type {HTMLInputElement} */ (document.getElementById('sfxVolumeSlider')),
+  resetSettingsBtn: /** @type {HTMLElement} */ (document.getElementById('resetSettingsBtn')),
   closeSettingsBtn: /** @type {HTMLElement} */ (document.getElementById('closeSettingsBtn'))
 };
 

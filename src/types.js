@@ -38,6 +38,7 @@
  * @property {HTMLElement} toggleSfxBtn
  * @property {HTMLInputElement} musicVolumeSlider
  * @property {HTMLInputElement} sfxVolumeSlider
+ * @property {HTMLElement} resetSettingsBtn
  * @property {HTMLElement} closeSettingsBtn
  */
 
