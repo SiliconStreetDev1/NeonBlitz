@@ -16,9 +16,12 @@ export class LevelController {
 
   /**
    * Starts a completely fresh run from Level 1.
+   * @returns {void}
    */
   startNewGame() {
     this.engine.checkpointManager.saveRunSeed(Math.floor(Math.random() * 1000000));
+    this.engine.isRandomMode = false;
+    this.engine.randomStagesCleared = 0;
     this.engine.level = this.engine.config.tuning.GAME_SETTINGS.STARTING_LEVEL;
     this.engine.dispatch('SET_COMBO', 1);
     this.engine.levelTimeSpent = 0;
@@ -31,8 +34,32 @@ export class LevelController {
   }
 
   /**
+   * Starts a randomized arcade run.
+   * @returns {void}
+   */
+  startRandomGame() {
+    this.engine.checkpointManager.saveRunSeed(Math.floor(Math.random() * 1000000));
+    this.engine.isRandomMode = true;
+    this.engine.randomStagesCleared = 0;
+    
+    const MIN_RANDOM_LEVEL = 10;
+    const MAX_RANDOM_LEVEL = 55; // Prevent hitting the final boss level
+    this.engine.level = Math.floor(Math.random() * (MAX_RANDOM_LEVEL - MIN_RANDOM_LEVEL + 1)) + MIN_RANDOM_LEVEL;
+    
+    this.engine.dispatch('SET_COMBO', 1);
+    this.engine.levelTimeSpent = 0;
+    this.engine.dispatch('SET_TIME', this.engine.config.tuning.GAME_SETTINGS.STARTING_TIME_MS);
+    
+    this.engine.screens.hideAllScreens();
+    this.engine.hud.updateLevelDisplay(`RND-${this.engine.randomStagesCleared + 1}`);
+    this.engine.screens.toggleGameVisibility(true);
+    this.initLevel();
+  }
+
+  /**
    * Bypasses early levels and starts directly at the user's highest saved checkpoint.
    * @param {number|null} targetLevel - Optional specific level to load.
+   * @returns {void}
    */
   loadCheckpointGame(targetLevel = null) {
     const milestones = this.engine.checkpointManager.getMilestones(); 
@@ -41,6 +68,8 @@ export class LevelController {
     
     if (highestMilestone <= 1 && !targetLevel) return;
     
+    this.engine.isRandomMode = false;
+    this.engine.randomStagesCleared = 0;
     this.engine.level = targetLevel || highestMilestone;
     this.engine.dispatch('SET_COMBO', 1);
     this.engine.levelTimeSpent = 0;
@@ -55,10 +84,13 @@ export class LevelController {
 
   /**
    * Rewinds the player to their most recent milestone after dying.
+   * @returns {void}
    */
   rewindToMilestone() {
     const milestones = this.engine.checkpointManager.getMilestones();
     this.engine.dispatch('SET_TIME', milestones[this.engine.level] || this.engine.config.tuning.GAME_SETTINGS.STARTING_TIME_MS);
+    this.engine.isRandomMode = false;
+    this.engine.randomStagesCleared = 0;
     this.engine.dispatch('SET_COMBO', 1);
     this.engine.isResumingFromCheckpoint = true;
     this.engine.levelTimeSpent = 0;
@@ -70,7 +102,44 @@ export class LevelController {
   }
 
   /**
+   * Evaluates and applies time bonuses when entering a new stage.
+   * @private
+   * @param {boolean} wasResuming 
+   * @returns {{ timeReward: number, carriedTime: number }}
+   */
+  _applyTimeRewards(wasResuming) {
+    const gs = this.engine.config.tuning.GAME_SETTINGS;
+    let carriedTime = this.engine.timeRemaining;
+
+    // Scenario 1: Brand new campaign game (Level 1) or Brand new Random Run (Stage 0)
+    const isFirstStage = (!this.engine.isRandomMode && this.engine.level === gs.STARTING_LEVEL) || 
+                         (this.engine.isRandomMode && this.engine.randomStagesCleared === 0);
+    
+    if (isFirstStage) {
+      if (this.engine.timeRemaining <= 0) this.engine.dispatch('SET_TIME', gs.STARTING_TIME_MS);
+      this.engine.levelStartCarriedTime = 0;
+      return { timeReward: 0, carriedTime: 0 };
+    }
+
+    // Scenario 2: Resuming from a checkpoint (No bonus time, just use the bank)
+    if (wasResuming) {
+      this.engine.levelStartCarriedTime = carriedTime;
+      return { timeReward: 0, carriedTime };
+    }
+
+    // Scenario 3: Progressing to the next stage (Campaign or Random)
+    // Difficulty scaling: Campaign scales by level. Random scales by stages survived.
+    const effectiveScalingLevel = this.engine.isRandomMode ? (this.engine.randomStagesCleared + 1) : this.engine.level;
+    const timeReward = Math.max(gs.MIN_TIME_ADD_MS, gs.BASE_TIME_ADD_MS * Math.pow(gs.TIME_DECAY_RATE, effectiveScalingLevel - 1));
+    
+    this.engine.levelStartCarriedTime = carriedTime;
+    this.engine.dispatch('ADD_TIME', timeReward);
+    return { timeReward, carriedTime };
+  }
+
+  /**
    * Initializes and resets state for the current level, generating new targets and grids.
+   * @returns {void}
    */
   initLevel() {
     this.engine.grid.setupGridDimensions(this.engine.config.level.GRID_COLS, this.engine.config.level.GRID_ROWS);
@@ -85,35 +154,19 @@ export class LevelController {
 
     this.engine.levelTimeSpent = 0;
     let bestTimes = this.engine.checkpointManager.getBestTimes();
-    const best = bestTimes[this.engine.level];
+    const best = this.engine.isRandomMode ? null : bestTimes[this.engine.level]; // Hide campaign best times in RND
     this.engine.hud.updateBestTimeDisplay(best);
 
-    let timeReward = 0;
-    let carriedTime = 0;
-    let wasResuming = this.engine.isResumingFromCheckpoint;
-    
-    const gs = this.engine.config.tuning.GAME_SETTINGS;
-    if (this.engine.level === gs.STARTING_LEVEL) {
-      if (this.engine.timeRemaining <= 0) this.engine.dispatch('SET_TIME', gs.STARTING_TIME_MS);
-      this.engine.levelStartCarriedTime = 0;
-    } else {
-      if (this.engine.isResumingFromCheckpoint) {
-        carriedTime = this.engine.timeRemaining;
-        this.engine.levelStartCarriedTime = carriedTime;
-        timeReward = 0;
-        this.engine.isResumingFromCheckpoint = false;
-      } else {
-        carriedTime = this.engine.timeRemaining;
-        this.engine.levelStartCarriedTime = carriedTime;
-        timeReward = Math.max(gs.MIN_TIME_ADD_MS, gs.BASE_TIME_ADD_MS * Math.pow(gs.TIME_DECAY_RATE, this.engine.level - 1));
-        this.engine.dispatch('ADD_TIME', timeReward);
-      }
-    }
+    const wasResuming = this.engine.isResumingFromCheckpoint;
+    const rewards = this._applyTimeRewards(wasResuming);
+    const timeReward = rewards.timeReward;
+    const carriedTime = rewards.carriedTime;
+    this.engine.isResumingFromCheckpoint = false;
     
     // Auto-save checkpoint for every level reached
     let milestones = this.engine.checkpointManager.getMilestones();
     const existingBank = milestones[this.engine.level] || 0;
-    const shouldSaveNewMilestone = this.engine.timeRemaining > existingBank;
+    const shouldSaveNewMilestone = !this.engine.isRandomMode && this.engine.timeRemaining > existingBank;
     if (shouldSaveNewMilestone) this.engine.checkpointManager.saveMilestone(this.engine.level, this.engine.timeRemaining);
 
     this.engine.particles.clear();
@@ -135,7 +188,10 @@ export class LevelController {
     
     this.engine.gameLoopController.start();
     
-    if (this.engine.level > this.engine.config.tuning.GAME_SETTINGS.STARTING_LEVEL && !wasResuming) {
+    const isFirstStage = (!this.engine.isRandomMode && this.engine.level === this.engine.config.tuning.GAME_SETTINGS.STARTING_LEVEL) || 
+                         (this.engine.isRandomMode && this.engine.randomStagesCleared === 0);
+
+    if (!isFirstStage && !wasResuming) {
       // Chain the animations cleanly using Promises instead of hacky setTimeouts
       this.engine.popups.showLevelBonus(timeReward, carriedTime).then(() => {
         // Only show "Checkpoint Saved" popup AFTER the Level Bonus finishes
@@ -148,6 +204,7 @@ export class LevelController {
 
   /**
    * Checks remaining blocks and advances the target queue if the current target is fully cleared.
+   * @returns {void}
    */
   advanceQueue() {
     this.engine.hud.updateTargetUI(this.engine.targetQueue, this.engine.currentTargetIndex, this.engine.targetDifficulty, this.engine.combo);
@@ -167,6 +224,7 @@ export class LevelController {
 
   /**
    * Triggers end-of-level animations, calculates bonuses, and transitions to the next stage.
+   * @returns {void}
    */
   levelComplete() {
     this.engine.dispatch('SET_PLAYING', false);
@@ -175,7 +233,7 @@ export class LevelController {
     const prevBest = bestTimes[this.engine.level];
     let isNewBest = false;
     
-    if (!prevBest || this.engine.levelTimeSpent < prevBest) {
+    if (!this.engine.isRandomMode && (!prevBest || this.engine.levelTimeSpent < prevBest)) {
       this.engine.checkpointManager.saveBestTime(this.engine.level, this.engine.levelTimeSpent);
       isNewBest = true;
     }
@@ -195,9 +253,23 @@ export class LevelController {
       this.engine.popups.showPopup('NEW BEST TIME!', this.engine.ui.canvas.width / 2, this.engine.ui.canvas.height / 2, '#f1c40f');
     }
 
-    this.engine.level++;
+    if (this.engine.isRandomMode) {
+      this.engine.randomStagesCleared++;
+      // Reroll the level and audio seed for the next stage of the random run
+      const MIN_RANDOM_LEVEL = 10;
+      const MAX_RANDOM_LEVEL = 55;
+      this.engine.level = Math.floor(Math.random() * (MAX_RANDOM_LEVEL - MIN_RANDOM_LEVEL + 1)) + MIN_RANDOM_LEVEL;
+      this.engine.checkpointManager.saveRunSeed(Math.floor(Math.random() * 1000000));
+    } else {
+      this.engine.level++;
+    }
+
     setTimeout(() => {
-      this.engine.hud.updateLevelDisplay(this.engine.level);
+      if (this.engine.isRandomMode) {
+        this.engine.hud.updateLevelDisplay(`RND-${this.engine.randomStagesCleared + 1}`);
+      } else {
+        this.engine.hud.updateLevelDisplay(this.engine.level);
+      }
       this.initLevel();
     }, this.engine.config.tuning.GAME_SETTINGS.LEVEL_TRANSITION_DELAY_MS);
   }

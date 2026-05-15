@@ -266,6 +266,7 @@ export class AppController {
    */
   bindUIEvents() {
     this.ui.startNewBtn.addEventListener('click', () => this.game.startNewGame());
+    this.ui.randomModeBtn.addEventListener('click', () => this.game.startRandomGame());
     this.ui.loadCheckpointBtn.addEventListener('click', () => this.game.loadCheckpointGame());
     this.ui.selectLevelBtn.addEventListener('click', () => this.game.showMilestoneSelector());
     this.ui.rewindBtn.addEventListener('click', () => this.game.rewindToMilestone());

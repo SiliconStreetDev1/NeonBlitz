@@ -32,6 +32,7 @@ const ui = {
   startScreen: /** @type {HTMLElement} */ (document.getElementById('startScreen')),
   startNewBtn: /** @type {HTMLElement} */ (document.getElementById('startNewBtn')),
   loadCheckpointBtn: /** @type {HTMLElement} */ (document.getElementById('loadCheckpointBtn')),
+  randomModeBtn: /** @type {HTMLElement} */ (document.getElementById('randomModeBtn')),
   selectLevelBtn: /** @type {HTMLElement} */ (document.getElementById('selectLevelBtn')),
   rewindBtn: /** @type {HTMLElement} */ (document.getElementById('rewindBtn')),
   restartBtn: /** @type {HTMLElement} */ (document.getElementById('restartBtn')),

@@ -20,6 +20,7 @@
  * @property {HTMLElement} startScreen
  * @property {HTMLElement} startNewBtn
  * @property {HTMLElement} loadCheckpointBtn
+ * @property {HTMLElement} randomModeBtn
  * @property {HTMLElement} selectLevelBtn
  * @property {HTMLElement} rewindBtn
  * @property {HTMLElement} restartBtn

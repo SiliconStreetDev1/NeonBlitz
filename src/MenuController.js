@@ -33,7 +33,11 @@ export class MenuController {
     this.engine.screens.hideAllScreens();
     this.engine.screens.toggleGameVisibility(false);
     this.engine.ui.gameOverScreen.classList.remove('hidden');
-    this.engine.screens.showRewindBtn(this.engine.level);
+    if (!this.engine.isRandomMode) {
+      this.engine.screens.showRewindBtn(this.engine.level);
+    } else {
+      this.engine.ui.rewindBtn.classList.add('hidden');
+    }
   }
 
   /**

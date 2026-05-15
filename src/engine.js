@@ -82,6 +82,10 @@ export class GameEngine {
     this.levelTimeSpent = 0;
     /** @type {boolean} */
     this.isResumingFromCheckpoint = false;
+    /** @type {boolean} */
+    this.isRandomMode = false;
+    /** @type {number} */
+    this.randomStagesCleared = 0;
 
     /** @type {TargetQueue} */ 
     this.targetQueue = [];
@@ -147,8 +151,17 @@ export class GameEngine {
   /** Activates the level checkpoint selection screen. */
   showMilestoneSelector() { this.menuController.showMilestoneSelector(); }
   
-  /** Starts a completely new game run from Level 1. */
+  /** 
+   * Starts a completely new game run from Level 1. 
+   * @returns {void}
+   */
   startNewGame() { this.levelController.startNewGame(); }
+
+  /** 
+   * Starts a randomized arcade run. 
+   * @returns {void}
+   */
+  startRandomGame() { this.levelController.startRandomGame(); }
 
   /**
    * Loads the game at the specified checkpoint level.

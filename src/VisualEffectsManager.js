@@ -22,6 +22,8 @@ export class VisualEffectsManager {
     this.allPlugins = [];
     /** @type {Record<string, new (game: import('./engine.js').GameEngine) => import('./types.js').VFXPlugin>} */
     this.pluginRegistry = {};
+    /** @type {import('./types.js').VFXPlugin[] | null} */
+    this.randomModePlugins = null;
 
     /** @type {number} */
     this.lastTime = performance.now();
@@ -138,6 +140,20 @@ export class VisualEffectsManager {
       this.lastTrackName = currentTrack;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.isCanvasClear = true;
+
+      if (this.game.isRandomMode) {
+        const numPlugins = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3 plugins
+        
+        // Enterprise-grade Fisher-Yates Shuffle for mathematically fair randomization
+        const availablePlugins = [...this.allPlugins];
+        for (let j = availablePlugins.length - 1; j > 0; j--) {
+          const k = Math.floor(Math.random() * (j + 1));
+          [availablePlugins[j], availablePlugins[k]] = [availablePlugins[k], availablePlugins[j]];
+        }
+        this.randomModePlugins = availablePlugins.slice(0, numPlugins);
+      } else {
+        this.randomModePlugins = null;
+      }
     }
 
     let needsRender = false;
@@ -154,7 +170,8 @@ export class VisualEffectsManager {
     // Iterate backwards so we can safely remove crashing plugins without skipping indices
     for (let i = this.allPlugins.length - 1; i >= 0; i--) {
       const plugin = this.allPlugins[i];
-      const isTriggered = (this.plugins[currentTrack] || []).includes(plugin) && this.game.isPlaying;
+      const activePluginsForTrack = this.randomModePlugins || (this.plugins[currentTrack] || []);
+      const isTriggered = activePluginsForTrack.includes(plugin) && this.game.isPlaying;
       
       try {
         plugin.update(dt, isTriggered, this.canvas, effectState);
