@@ -1,0 +1,29 @@
+{
+  "hazards": {
+    "fog": { "unlockLevel": 10 },
+    "chameleon": { "unlockLevel": 15 },
+    "emp": { "unlockLevel": 20, "overrideFogLevel": 50, "doubleEmpLevel": 50, "exclusiveWith": ["encryptedNodes"] },
+    "phasing": { "unlockLevel": 25 },
+    "encryptedNodes": { "unlockLevel": 30 },
+    "memoryLeak": { "unlockLevel": 45, "exclusiveWith": ["fog", "chameleon", "phasing"] },
+    "shortCircuit": { "unlockLevel": 35 }
+  },
+  "targetDifficulty": {
+    "hideQueue": 16,
+    "hideOrb": 26,
+    "hideBoth": 41
+  },
+  "milestones": {
+    "deepCoreUnlock": 5,
+    "bossLevel": 60
+  },
+  "boardGeneration": {
+    "maxAllowedColorsBase": 4,
+    "maxAllowedColorsScale": 3,
+    "maxTargetsCap": 6,
+    "minTargetsEasy": 4,
+    "minTargetsHard": 4,
+    "easyLevelThreshold": 10,
+    "maxStrandsPerColor": 2
+  }
+}

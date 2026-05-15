@@ -1,0 +1,18 @@
+{
+  "GRID_COLS": 6,
+  "GRID_ROWS": 8,
+  "ALL_COLORS": [
+    { "class": "color-red", "name": "RED", "hex": "#ff3366" },
+    { "class": "color-green", "name": "GREEN", "hex": "#33cc66" },
+    { "class": "color-yellow", "name": "YELLOW", "hex": "#ffcc00" },
+    { "class": "color-blue", "name": "BLUE", "hex": "#3366ff" },
+    { "class": "color-brown", "name": "BROWN", "hex": "#8b4500" },
+    { "class": "color-purple", "name": "PURPLE", "hex": "#9933ff" },
+    { "class": "color-cyan", "name": "CYAN", "hex": "#00ffff" },
+    { "class": "color-pink", "name": "PINK", "hex": "#ff66cc" },
+    { "class": "color-lime", "name": "LIME", "hex": "#bfff00" },
+    { "class": "color-mint", "name": "MINT", "hex": "#66ffcc" },
+    { "class": "color-peach", "name": "PEACH", "hex": "#ffb366" },
+    { "class": "color-lavender", "name": "LAVENDER", "hex": "#cc99ff"}
+  ]
+}

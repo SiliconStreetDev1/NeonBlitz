@@ -1,0 +1,27 @@
+{
+  "tracks": [
+    "1.json", "2.json", "4.json", "9.json", "15.json",
+    "18.json", "19.json", "20.json", "21.json", "22.json",
+    "24.json", "25.json", "26.json", "27.json", "28.json",
+    "29.json", "30.json"
+  ],
+  "bossTrack": "23.json",
+  "instruments": [
+    { "synth": "PianoSynth", "start": 0, "end": 7 },
+    { "synth": "ChromaticPercussionSynth", "start": 8, "end": 15 },
+    { "synth": "OrganSynth", "start": 16, "end": 23 },
+    { "synth": "GuitarSynth", "start": 24, "end": 26 },
+    { "synth": "ElectricGuitarSynth", "start": 27, "end": 31 },
+    { "synth": "BassSynth", "start": 32, "end": 39 },
+    { "synth": "StringSynth", "start": 40, "end": 55 },
+    { "synth": "BrassSynth", "start": 56, "end": 71 },
+    { "synth": "WoodwindSynth", "start": 72, "end": 79 },
+    { "synth": "LeadSynth", "start": 83, "end": 87 },
+    { "synth": "PadSynth", "start": 88, "end": 95 },
+    { "synth": "SoundEffectsSynth", "start": 96, "end": 103 },
+    { "synth": "EthnicSynth", "start": 104, "end": 111 },
+    { "synth": "DrumSynth", "start": 112, "end": 119 },
+    { "synth": "SoundEffectsSynth", "start": 120, "end": 127 },
+    { "synth": "DrumSynth", "start": 128, "end": 128 }
+  ]
+}

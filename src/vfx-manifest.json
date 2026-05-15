@@ -1,0 +1,69 @@
+{
+  "mappings": {
+    "intro.json": {
+      "genre": "Cinematic",
+      "effects": ["FloatingDust"]
+    },
+   
+    "4.json": {
+      "genre": "Arcade Space Shooter",
+      "effects": [ "RetroCRT"]
+    },
+    "9.json": {
+      "genre": "Vaporwave / Outrun",
+      "effects": [ "VHSTrackingRoll"]
+    },
+    "15.json": {
+      "genre": "Classical Piano",
+      "effects": ["SakuraPetals"]
+    },
+    "18.json": {
+      "genre": "Acoustic Fantasy",
+      "effects": ["FairyDust"]
+    },
+    "19.json": {
+      "genre": "Cyberpunk",
+      "effects": ["MatrixRain"]
+    },
+    "21.json": {
+      "genre": "Horror",
+      "effects": ["GraveyardMist", "BloodDrips"]
+    },
+    "20.json": {
+      "genre": "Synthwave Arcade",
+      "effects": ["WarpSpeed"]
+    },
+    "22.json": {
+      "genre": "Winter Ice",
+      "effects": ["Blizzard", "FrostVignette"]
+    },
+    "23.json": {
+      "genre": "Gothic Boss Fight",
+      "effects": ["CrumblingAsh", "ThunderstormFlashes"]
+    },
+    "24.json": {
+      "genre": "EDM Rave",
+      "effects": ["LaserSweeps", "DiscoGridFlashes"]
+    },
+    "1.json": {
+      "genre": "Cowboy Theme",
+      "effects": ["DesertSun", "BlowingSand", "HeatMirage"]
+    },
+    "25.json": {
+      "genre": "Lullaby / Deep Space",
+      "effects": ["TwinkleStars"]
+    },
+    "27.json": {
+      "genre": "Horror",
+     "effects": [ "RetroCRT","SubliminalGlitch"]
+    },
+      "28.json": {
+      "genre": "Happy",
+     "effects": [ "AngelicLight"]
+    },
+    "29.json": {
+      "genre": "Apocalyptic / Cataclysm",
+      "effects": ["MeteorShower", "HeatDistortion"]
+    }
+  }
+}

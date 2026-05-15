@@ -1,0 +1,19 @@
+{
+  "name": "secure-core-miner",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.0.11"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.17",
+    "rlo-engine": "^1.0.3"
+  }
+}

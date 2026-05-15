@@ -1,0 +1,28 @@
+{
+  "GAME_SETTINGS": {
+    "STARTING_LEVEL": 1,
+    "STARTING_TIME_MS": 45000,
+    "BASE_TIME_ADD_MS": 15000,
+    "MIN_TIME_ADD_MS": 5000,
+    "TIME_DECAY_RATE": 0.85,
+    "CHAMELEON_CYCLE_MS": 300,
+    "LEVEL_TRANSITION_DELAY_MS": 1500,
+    "DANGER_PERCENT": 30,
+    "MIN_ERROR_PENALTY_MS": 1000,
+    "MAX_ERROR_PENALTY_MS": 5000
+  },
+  "STORAGE": {
+    "MILESTONES": "coreminer_milestones",
+    "BEST_TIMES": "coreminer_best_times",
+    "SETTINGS": "coreminer_settings"
+  },
+  "TIME_REWARDS": {
+    "TIME_BONUS_PER_BLOCK_MS": 400,
+    "TIME_BONUS_PER_COMBO_MS": 1000
+  },
+  "VIBRATION": {
+    "SELECT": 15, "ERROR": 30, "DESELECT": 10,
+    "SUCCESS": [30, 50, 80], "LEVEL_COMPLETE": [50, 50, 100, 50, 200], "GAME_OVER": [200, 100, 200]
+  },
+  "STYLING": { "LINE_WIDTH": 14, "LINE_COLOR": "rgba(0, 0, 0, 0.85)", "SHADOW_BLUR": 10 }
+}

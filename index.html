@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0b0c10">
+  <link rel="icon" href="./icon-192.png">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <title>Neon Blitz</title>
+  
+  <!-- Social Sharing (Open Graph / Twitter) Meta Tags -->
+  <meta property="og:title" content="Neon Blitz">
+  <meta property="og:description" content="A fast-paced cyberpunk hacking puzzle game.">
+  <meta property="og:image" content="https://your-username.github.io/neon-blitz/icon-512.png">
+  <meta name="twitter:card" content="summary">
+
+  <style>
+    @keyframes retro-wave {
+      0% { background-position: 200% center; }
+      100% { background-position: 0% center; }
+    }
+    @keyframes retro-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    .neon-title {
+      background: linear-gradient(to right, 
+        #ff00ff, #00ffff, #33cc66, #ffcc00, #ff3366, #9933ff, #ff00ff);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: retro-wave 2.5s linear infinite, retro-pulse 1.2s ease-in-out infinite;
+      font-style: italic;
+      letter-spacing: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="initScreen" class="overlay-screen" style="z-index: 1000; background: #0b0c10; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s ease-out;">
+    <h1 class="neon-title" style="font-size: 3.5rem; margin-bottom: 20px; text-align: center;">NEON BLITZ</h1>
+    <div style="max-width: 80%; text-align: center; margin-bottom: 30px; color: #aaa; font-family: monospace; font-size: 0.9rem; line-height: 1.5;">
+      <p style="color: #66fcf1; font-weight: bold; margin-bottom: 10px;">> INSTRUCTIONS:</p>
+      <p>> SWIPE CONNECT matching colored nodes.</p>
+      <p>> CLEAR the target sequence before time runs out.</p>
+      <p>> DO NOT cross your own path.</p>
+    </div>
+    <p id="initText" style="color: #fff; font-size: 1.2rem; font-weight: bold; letter-spacing: 2px;">[ BOOTING SYSTEM... ]</p>
+  </div>
+
+  <div id="startScreen" class="overlay-screen">
+    <h1 class="neon-title">NEON BLITZ</h1>
+    <button id="startNewBtn" class="menu-btn">START NEW GAME</button>
+    <button id="loadCheckpointBtn" class="menu-btn">CONTINUE</button>
+    <button id="selectLevelBtn" class="menu-btn">📍 SELECT LEVEL</button>
+    <button id="bestTimesBtn" class="menu-btn gold-btn">🏆 BEST TIMES</button>
+    <button id="settingsBtn" class="menu-btn">⚙️ SETTINGS</button>
+  </div>
+
+  <div id="settingsScreen" class="overlay-screen hidden">
+    <h2 style="color: #fff; text-shadow: 0 0 20px #fff;">SETTINGS</h2>
+    <div style="margin: 20px 0; display: flex; flex-direction: column; gap: 15px; width: 80%; max-width: 300px; align-items: center;">
+      <button id="toggleMusicBtn" class="menu-btn" style="width: 100%;">🎵 MUSIC: ON</button>
+      <label style="color: #fff; font-weight: bold; align-self: flex-start;">MUSIC VOLUME</label>
+      <input type="range" id="musicVolumeSlider" min="0" max="1" step="0.05" value="1" style="width: 100%; cursor: pointer;">
+      
+      <button id="toggleSfxBtn" class="menu-btn" style="width: 100%; margin-top: 15px;">🔊 SFX: ON</button>
+      <label style="color: #fff; font-weight: bold; align-self: flex-start;">SFX VOLUME</label>
+      <input type="range" id="sfxVolumeSlider" min="0" max="1" step="0.05" value="1" style="width: 100%; cursor: pointer;">
+    </div>
+    <button id="closeSettingsBtn" class="menu-btn gold-btn">BACK</button>
+  </div>
+
+  <div class="hud">
+    <div class="stats-row">
+      <div class="stats">LVL: <span id="levelDisplay">1</span> | TIME: <span id="timeSpentDisplay">0.0s</span> | BEST: <span id="bestTimeDisplay">--</span></div>
+      <button id="quitBtn" class="quit-btn">MENU</button>
+    </div>
+    <div id="targetIndicator" class="target-indicator">
+      <div style="font-size: 1.4rem;"><span id="targetColorName"></span></div>
+      <div id="nextQueueDisplay" style="font-size: 0.9rem; color: #888; margin-top: 4px;"></div>
+    </div>
+    <div class="timer-container"><div id="timerBar" class="timer-bar"></div></div>
+  </div>
+  
+  <div class="game-area">
+    <div id="gridContainer" class="grid"></div>
+    <canvas id="particleCanvas"></canvas>
+    <canvas id="lineCanvas"></canvas>
+  </div>
+
+  <div id="gameOverScreen" class="overlay-screen hidden">
+    <h2>SYSTEM FAILURE</h2>
+    <button id="rewindBtn" class="menu-btn gold-btn hidden">REWIND</button>
+    <button id="restartBtn" class="menu-btn">MAIN MENU</button>
+  </div>
+
+  <div id="bestTimesScreen" class="overlay-screen hidden">
+    <h2 style="color: #f1c40f; text-shadow: 0 0 20px #f1c40f;">BEST TIMES</h2>
+    <div id="bestTimesList" class="best-times-list"></div>
+    <button id="shareTwitterBtn" class="menu-btn" style="background: #1DA1F2; color: #fff; box-shadow: 0 0 15px rgba(29, 161, 242, 0.4);">🐦 SHARE ON X</button>
+    <button id="closeBestTimesBtn" class="menu-btn">BACK</button>
+  </div>
+
+  <div id="milestoneScreen" class="overlay-screen hidden">
+    <h2 style="color: #66fcf1; text-shadow: 0 0 20px #66fcf1;">CHECKPOINTS</h2>
+    <div id="milestoneList" class="best-times-list"></div>
+    <button id="closeMilestoneBtn" class="menu-btn">BACK</button>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
