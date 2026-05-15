@@ -135,8 +135,9 @@ export class AudioManager {
    * @param {number | string} freq 
    * @param {number} duration 
    * @param {number} velocity 
+   * @param {number} [timeOffset=0]
    */
-  playSFX(id, freq, duration, velocity) { this.sfx?.playSFX(id, freq, duration, velocity); }
+  playSFX(id, freq, duration, velocity, timeOffset = 0) { this.sfx?.playSFX(id, freq, duration, velocity, timeOffset); }
   /** @returns {void} */
   playSelect() { this.sfx?.playSelect(); }
   /** @returns {void} */

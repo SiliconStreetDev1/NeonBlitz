@@ -40,22 +40,22 @@ export class SettingsManager {
           return {
             musicEnabled: parsed.musicEnabled ?? true,
             sfxEnabled: parsed.sfxEnabled ?? true,
-            musicVolume: parsed.musicVolume ?? 1.0,
-            sfxVolume: parsed.sfxVolume ?? 0.6
+            musicVolume: parsed.musicVolume ?? 0.6,
+            sfxVolume: parsed.sfxVolume ?? 0.4
           };
         }
       }
     } catch (e) {
       console.warn("Could not load settings, using defaults", e);
     }
-    return { musicEnabled: true, sfxEnabled: true, musicVolume: 1.0, sfxVolume: 0.6 };
+    return { musicEnabled: true, sfxEnabled: true, musicVolume: 0.6, sfxVolume: 0.4 };
   }
 
   /**
    * Restores all settings to their default values.
    */
   restoreDefaults() {
-    this.settings = { musicEnabled: true, sfxEnabled: true, musicVolume: 0.8, sfxVolume: 0.55 };
+    this.settings = { musicEnabled: true, sfxEnabled: true, musicVolume: 0.6, sfxVolume: 0.4 };
     this.save();
   }
 

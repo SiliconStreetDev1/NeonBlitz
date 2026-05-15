@@ -26,7 +26,8 @@ export class SFXManager {
     if (!this.settings.sfxEnabled) return;
     // Pass settings down using the new Options Object API
     this.engine.playSFX(id, freq, duration, {
-      velocity: velocity * this.settings.sfxVolume * 1.2,
+      // RLO Engine requires volume to be baked into velocity for synthesis
+      velocity: velocity * this.settings.sfxVolume * 0.7, 
       timeOffset: timeOffset
     });
   }
@@ -44,19 +45,17 @@ export class SFXManager {
     // Heavy Overdriven Error Buzzer
     // Switching to the Electric Guitar synth (ID 27) and stacking an octave 
     // forces the compressor to violently distort the sound, making it MUCH louder.
-    this.playSFX(27, "A2", 0.4, 1.0);
-    this.playSFX(27, "A#2", 0.4, 1.0);
-    this.playSFX(27, "A3", 0.4, 1.0);
+    this.playSFX(27, "A2", 0.4, 0.8);
+    this.playSFX(27, "A#2", 0.4, 0.8);
+    this.playSFX(27, "A3", 0.4, 0.8);
   }
 
   playSuccess() {
-    // Epic, bright arcade arpeggio using the Lead Synth (ID 83)
-    // Velocity pushed to 1.0, with a stacked lower root note for extra body
-    this.playSFX(83, "C4", 0.1, 1.0);
-    this.playSFX(83, "C3", 0.4, 1.0); // Stacked lower octave for weight
-    this.playSFX(83, "E4", 0.1, 1.0, 0.05);
-    this.playSFX(83, "G4", 0.2, 1.0, 0.1);
-    this.playSFX(83, "C5", 0.4, 1.0, 0.15); // Bright top note to cut through
+    // A very subtle, light "coin" chime (ID 11 - Vibraphone)
+    // Shifted to a higher octave and drastically reduced velocity for a much less intense feel
+    this.playSFX(11, "E5", 0.1, 0.198);
+    this.playSFX(11, "B5", 0.1, 0.198, 0.05);
+    this.playSFX(11, "E6", 0.2, 0.265, 0.1);
   }
 
   playLevelComplete() {

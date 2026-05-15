@@ -54,8 +54,9 @@ export class ParticleSystem {
    */
   spawn(x, y, color, count = 5, speed = 5) {
     // Play a block destruction "pop" or "snare" sound using the RLO drum synth (ID 128)
+    // Drastically lower volume and randomize pitch/timing to prevent clipping when multiple blocks break
     if (this.audioEngine) {
-      this.audioEngine.playSFX(128, 80, 0.1, 0.6); 
+      this.audioEngine.playSFX(128, 70 + Math.random() * 20, 0.1, 0.15, Math.random() * 0.05); 
     }
 
     for (let i = 0; i < count; i++) {

@@ -130,7 +130,7 @@ export class MusicManager {
       // Scale down to 38% to give the compressor even more headroom for SFX.
       // Drop intro (menu) track by an additional 30% (0.7x) so it isn't overpowering.
       const trackScale = this.currentType === 'menu' ? 0.7 : 1.0;
-      this.engine.setMusicVolume(vol * 0.38 * trackScale);
+      this.engine.setMusicVolume(vol * 0.266 * trackScale); // Lowered by an additional 30% (0.38 * 0.7)
     }
   }
 
