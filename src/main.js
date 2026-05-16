@@ -52,7 +52,8 @@ const ui = {
   musicVolumeSlider: /** @type {HTMLInputElement} */ (document.getElementById('musicVolumeSlider')),
   sfxVolumeSlider: /** @type {HTMLInputElement} */ (document.getElementById('sfxVolumeSlider')),
   resetSettingsBtn: /** @type {HTMLElement} */ (document.getElementById('resetSettingsBtn')),
-  closeSettingsBtn: /** @type {HTMLElement} */ (document.getElementById('closeSettingsBtn'))
+  closeSettingsBtn: /** @type {HTMLElement} */ (document.getElementById('closeSettingsBtn')),
+  installBtn: document.getElementById('installBtn') ? /** @type {HTMLElement} */ (document.getElementById('installBtn')) : undefined
 };
 
 const config = {

@@ -199,6 +199,8 @@ export class AppController {
     this.lastSfxPlayTime = 0;
     /** @type {OrientationOverlay | undefined} */
     this.orientation = undefined;
+    /** @type {any} */
+    this.deferredInstallPrompt = null;
   }
 
   init() {
@@ -209,7 +211,48 @@ export class AppController {
     this.bindUIEvents();
     initDebugBar(this.game, this.ui);
     this.registerServiceWorker();
+    this.setupPWAInstallPrompt();
     this.start();
+  }
+
+  /**
+   * Intercepts the browser's native PWA install prompt to show a custom "Install/Download" button.
+   */
+  setupPWAInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome from automatically showing the mini-infobar
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      this.deferredInstallPrompt = e;
+      
+      // Show your custom "Download App" button if it exists in the DOM
+      if (this.ui.installBtn) {
+        this.ui.installBtn.style.display = 'block'; // Make it visible
+      }
+    });
+
+    if (this.ui.installBtn) {
+      this.ui.installBtn.addEventListener('click', async () => {
+        if (!this.deferredInstallPrompt) return;
+        
+        // Show the native Android install prompt dialog
+        this.deferredInstallPrompt.prompt();
+        
+        // Wait for the user's choice
+        const { outcome } = await this.deferredInstallPrompt.userChoice;
+        console.log(`[PWA] User install choice: ${outcome}`);
+        
+        // Clear the prompt as it can only be used once
+        this.deferredInstallPrompt = null;
+        if (this.ui.installBtn) this.ui.installBtn.style.display = 'none';
+      });
+    }
+
+    window.addEventListener('appinstalled', () => {
+      console.log('[PWA] Neon Blitz successfully installed!');
+      this.deferredInstallPrompt = null;
+      if (this.ui.installBtn) this.ui.installBtn.style.display = 'none';
+    });
   }
 
   /**

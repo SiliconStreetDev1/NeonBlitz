@@ -41,6 +41,7 @@
  * @property {HTMLInputElement} sfxVolumeSlider
  * @property {HTMLElement} resetSettingsBtn
  * @property {HTMLElement} closeSettingsBtn
+ * @property {HTMLElement} [installBtn]
  */
 
 /**
