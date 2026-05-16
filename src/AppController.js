@@ -266,6 +266,15 @@ export class AppController {
           .then(reg => console.log('✅ PWA Service Worker Registered!', reg.scope))
           .catch(err => console.error('⚠️ PWA Service Worker Failed:', err));
       });
+
+      // Reload the page when the Service Worker updates to prevent version mismatch crashes
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
     }
   }
 
